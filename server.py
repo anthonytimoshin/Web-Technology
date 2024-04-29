@@ -1,4 +1,5 @@
 import socket
+import time
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -10,5 +11,10 @@ while True:
     data = conn.recv(1024)  # Получаем данные из сокета.
     if not data:
         break
-    conn.sendall(data[::-1])  # Отправляем данные в сокет.
+    data = data[::-1]
+    message = " Сервер написал Тимошин А.А. М3О-107Б-23"
+    data = data + message.encode('utf-8')
+    time.sleep(1.0)  # имитация работы сервера (задержка в 1 секунду)
+    conn.sendall(data)  # Отправляем данные в сокет.
+
 conn.close()
