@@ -24,7 +24,9 @@ while True:
 
     if (time.time() - start) >= 30.0:  # Отключаем клиента от сервера через 30 секунд задержки
         data = "Server timed out, connection closed. Try again. Server was written by Timoshin A.A. M3O-107B-23 \0"
+        f.write("Server message: " + data[:-2] + "\n")  # Логируем отправленное сообщение
         conn.sendall(data.encode('UTF-8'))
+        f.write("Time of sending: " + time.ctime() + "\n")  # Логируем время отправки сообщения
         conn.close()
 
     if not data:
@@ -41,9 +43,5 @@ while True:
 
     f.write("Time of sending: " + time.ctime() + "\n")  # Логируем время отправки сообщения
 
-conn.close()
-
-f.write("Disconnection time: " + time.ctime() + "\n\n\n")  # Логируем отключение клиента от сервера
-f.close()
-
-server_socket.close()
+    conn.close()
+    f.write("Disconnection time: " + time.ctime() + "\n\n\n")  # Логируем отключение клиента от сервера
