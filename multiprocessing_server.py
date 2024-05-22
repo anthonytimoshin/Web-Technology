@@ -2,8 +2,8 @@ import socket
 import time
 import multiprocessing
 
-file = "logfile_server.txt"
-f = open(file, "a+")
+file = "/Users/anton/code/stepik/logfile_server.txt"
+f = open(file, "a")
 
 
 def handle_client(conn, addr):
@@ -35,13 +35,15 @@ def handle_client(conn, addr):
         f.write("Disconnection time: " + time.ctime() + "\n\n\n")
 
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(("127.0.0.1", 65000))
-server_socket.listen(5)
+if __name__ == '__main__':
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind(("127.0.0.1", 65000))
+    server_socket.listen(5)  # максимальное количество подключений одновременно - 5
 
-f.write("Time of starting: " + time.ctime() + "\n")
+    f.write("Time of starting: " + time.ctime() + "\n")
 
-while True:
-    conn, addr = server_socket.accept()
-    process = multiprocessing.Process(target=handle_client, args=(conn, addr))
-    process.start()
+    while True:
+        conn, addr = server_socket.accept()
+        process = multiprocessing.Process(target=handle_client, args=(conn, addr))
+        process.start()
+
