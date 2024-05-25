@@ -16,16 +16,21 @@ def authorization(conn, addr):
         if not nickname:
             break
 
-        # блок отправки последних 10 сообщений клиенту
-        # messages = f.readlines()[-10:]
-        # for msg in messages:
-        #     conn.send(msg.encode("UTF-8"))
-        #
-
         print(f'New connection from {nickname}: {addr}')
         print(clients)
 
+        # блок отправки последних 10 сообщений клиенту
+        send_last_10_messages(conn)
+
         return nickname
+
+
+def send_last_10_messages(conn):
+    f.seek(0)
+    messages = f.readlines()[-10:]
+    for msg in messages:
+        msg = msg.strip() + "\n"
+        conn.send(msg.encode("UTF-8"))
 
 
 def message(conn, addr):
