@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include "chrono"
+#include "vector"
 
 using namespace std;
 
@@ -45,14 +45,21 @@ int main()
     // sending nickname
     send(clientSocket, message.c_str(), message.length(), 0);
 
+    // !!! вот тут должен быть блок считывания 10 последних сообщений от сервера !!!
+
     while (true) {
         getline(cin, message);
-        send(clientSocket, message.c_str(), message.length(), 0); // здесь или снизу (гипотеза - exit принимается сервером, проверяется условие, закрывается сокет)
+        send(clientSocket, message.c_str(), message.length(), 0);
         if (message == "exit") {
             break;
         }
-//        send(clientSocket, message.c_str(), message.length(), 0);
+        char buffer[1024];
+        recv(clientSocket, buffer, sizeof(buffer), 0);
+        cout << buffer << endl;
+        buffer[0] = ' ';
     }
+
+
 
     // closing socket
     close(clientSocket);
