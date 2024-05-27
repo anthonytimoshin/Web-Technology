@@ -18,14 +18,9 @@ def authorization(conn, addr):
 
         print(f'New connection from {nickname}: {addr}')
         print(clients)
+        break
 
-        # блок отправки последних 10 сообщений клиенту
-        send_last_10_messages(conn)
-
-        return nickname
-
-
-def send_last_10_messages(conn):
+    # блок отправки последних 10 сообщений клиенту
     f.seek(0)
     messages = f.readlines()[-10:]
     sent = ''
@@ -34,12 +29,6 @@ def send_last_10_messages(conn):
         sent += msg
     print(sent)
     conn.send(sent.encode("utf-8"))
-
-
-def message(conn, addr):
-    nickname = authorization(conn, addr)
-    nick = nickname
-    print(nick)
 
     # блок получения сообщений от клиента
     while True:
@@ -50,9 +39,10 @@ def message(conn, addr):
         if message == "exit":
             conn.close()
             break
-
-        f.write(nickname + ": " + message + "\n")
-        print(nickname + ": " + message)
+        message = nickname + ": " + message + "\n"
+        conn.send(message.encode("utf-8"))
+        f.write(message)
+        print(message)
 
 
 if __name__ == '__main__':
@@ -62,6 +52,6 @@ if __name__ == '__main__':
 
     while True:
         conn, addr = server_socket.accept()
-
-        process = multiprocessing.Process(target=message, args=(conn, addr))
-        process.start()
+        authorization(conn, addr)
+        # process = multiprocessing.Process(target=authorization, args=(conn, addr))
+        # process.start()
