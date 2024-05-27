@@ -49,12 +49,14 @@ int main()
         getline(cin, message);
         send(clientSocket, message.c_str(), message.length(), 0); // здесь или снизу (гипотеза - exit принимается сервером, проверяется условие, закрывается сокет)
         if (message == "exit") {
+            cin.ignore();
             break;
         }
         char sent[1024];
         recv(clientSocket, sent, sizeof(sent), 0);
         cout << sent << endl;
-        //        send(clientSocket, message.c_str(), message.length(), 0);
+        sent[0] = '0';
+        cout << "Введите сообщение: ";
     }
 
     // closing socket
