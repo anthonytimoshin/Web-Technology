@@ -28,9 +28,12 @@ def authorization(conn, addr):
 def send_last_10_messages(conn):
     f.seek(0)
     messages = f.readlines()[-10:]
+    sent = ''
     for msg in messages:
         msg = msg.strip() + "\n"
-        conn.send(msg.encode("UTF-8"))
+        sent += msg
+    print(sent)
+    conn.send(sent.encode("utf-8"))
 
 
 def message(conn, addr):
@@ -62,4 +65,3 @@ if __name__ == '__main__':
 
         process = multiprocessing.Process(target=message, args=(conn, addr))
         process.start()
-
