@@ -3,26 +3,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include "vector"
-#include "fstream"
+#include "chrono"
 
 using namespace std;
 
-void CachedMessages() {
-    ifstream file("/Users/anton/code/stepik/cache.txt");
-    if (file.is_open()) {
-        string line;
-        while (getline(file, line)) {
-            cout << line << endl;
-        }
-        file.close();
-    }
-}
-
-
 int main()
 {
-    CachedMessages();
     char sinAddr[16];
     int sinPort;
 
@@ -59,34 +45,16 @@ int main()
     // sending nickname
     send(clientSocket, message.c_str(), message.length(), 0);
 
-    // Создание вектора для хранения сообщений cache
-    vector<string> messages;
-
     while (true) {
         getline(cin, message);
-        send(clientSocket, message.c_str(), message.length(), 0);
-
-        // Добавление сообщения в вектор
-        messages.push_back(message);
-
-        // Проверка размера вектора и запись в файл, если нужно
-        if (messages.size() > 5) {
-            messages.erase(messages.begin());
-        }
-
-        // Запись сообщений в файл
-        ofstream s("cached_messages.txt", ios::app); // cache
-        for (const auto& msg : messages) {
-            s << msg;
-        }
-
+        send(clientSocket, message.c_str(), message.length(), 0); // здесь или снизу (гипотеза - exit принимается сервером, проверяется условие, закрывается сокет)
         if (message == "exit") {
             break;
         }
-        char buffer[1024];
-        recv(clientSocket, buffer, sizeof(buffer), 0);
-        cout << buffer << endl;
-        buffer[0] = ' ';
+        char sent[1024];
+        recv(clientSocket, sent, sizeof(sent), 0);
+        cout << sent << endl;
+        //        send(clientSocket, message.c_str(), message.length(), 0);
     }
 
     // closing socket
