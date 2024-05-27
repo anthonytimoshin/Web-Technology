@@ -7,18 +7,20 @@ f = open(file, "a+")
 clients = []
 
 
-def authorization(conn, addr):
+def nickname(conn):
     while True:
         # инициализация пользователя, ввод никнейма
-        conn.send("Enter your nickname: ".encode("utf-8"))
         nickname = conn.recv(1024).decode("UTF-8")
-        clients.append((nickname, addr[0], addr[1]))
         if not nickname:
             break
+        message = "Your nickname: " + nickname + + 50*" " + "\n"
+        conn.send(message.encode("utf-8"))
+        return nickname
 
-        print(f'New connection from {nickname}: {addr}')
-        print(clients)
-        break
+
+def authorization(conn, addr):
+
+    clients.append(conn)
 
     # блок отправки последних 10 сообщений клиенту
     f.seek(0)
@@ -30,16 +32,21 @@ def authorization(conn, addr):
     print(sent)
     conn.send(sent.encode("utf-8"))
 
-    # блок получения сообщений от клиента
+    conn.send("Enter your nickname: ".encode("utf-8"))
+    nick = nickname(conn)
+    print(nick)
+
     while True:
         message = conn.recv(1024).decode("UTF-8")
-
         if not message:
             break
         if message == "exit":
             conn.close()
+            print(f"{addr} disconnected")
             break
-        message = nickname + ": " + message + "\n"
+
+        message = (nick + ": " + message + 50*" " + "\n")
+        message.strip()
         conn.send(message.encode("utf-8"))
         f.write(message)
         print(message)
@@ -52,6 +59,7 @@ if __name__ == '__main__':
 
     while True:
         conn, addr = server_socket.accept()
+        print(f'New connection from: {addr}')
         authorization(conn, addr)
         # process = multiprocessing.Process(target=authorization, args=(conn, addr))
         # process.start()
