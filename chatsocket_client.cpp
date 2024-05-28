@@ -3,12 +3,26 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include "chrono"
+#include "vector"
+#include "fstream"
 
 using namespace std;
 
 int main()
 {
+    vector <string> cache;
+    ofstream file("/Users/anton/code/stepik/cache.txt", ios::app);
+
+    ifstream file_reader("/Users/anton/code/stepik/cache.txt");
+    if (file_reader.is_open()) {
+        string line;
+        while (getline(file_reader, line)) {
+            cout << line << endl;
+        }
+        file_reader.close();
+    }
+//    ofstream myFile("/Users/anton/code/stepik/cache.txt", ios::trunc);
+
     char sinAddr[16];
     int sinPort;
 
@@ -54,11 +68,23 @@ int main()
         char sent[1024];
         recv(clientSocket, sent, sizeof(sent), 0);
         cout << sent << endl;
+
+        cache.push_back(sent);
+        if (cache.size() > 5) {
+            cache.erase(cache.begin());
+        }
+
         cout << "Cообщение: ";
     }
 
     // closing socket
     close(clientSocket);
+
+    // closing file
+    for (int i = 0; i < 5; i++) {
+        file << cache[i];
+    }
+    file.close();
 
     return 0;
 }
