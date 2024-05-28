@@ -1,6 +1,6 @@
 import socket
 import time
-import multiprocessing
+import threading
 
 file = "/Users/anton/code/stepik/messenger.txt"
 f = open(file, "a+")
@@ -14,7 +14,7 @@ def nickname(conn):
         if not nickname:
             break
         message = "Your nickname: " + nickname + + 50*" " + "\n"
-        conn.send(message.encode("utf-8"))
+        conn.send(message.encode("UTF-8"))
         return nickname
 
 
@@ -30,9 +30,9 @@ def authorization(conn, addr):
         msg = msg.strip() + "\n"
         sent += msg
     print(sent)
-    conn.send(sent.encode("utf-8"))
+    conn.send(sent.encode("UTF-8"))
 
-    conn.send("Enter your nickname: ".encode("utf-8"))
+    conn.send("Enter your nickname: ".encode("UTF-8"))
     nick = nickname(conn)
     print(nick)
 
@@ -47,7 +47,8 @@ def authorization(conn, addr):
 
         message = (nick + ": " + message + 50*" " + "\n")
         message.strip()
-        conn.send(message.encode("utf-8"))
+        for i in clients:
+            i.send(message.encode("UTF-8"))
         f.write(message)
         print(message)
 
@@ -60,6 +61,5 @@ if __name__ == '__main__':
     while True:
         conn, addr = server_socket.accept()
         print(f'New connection from: {addr}')
-        authorization(conn, addr)
-        # process = multiprocessing.Process(target=authorization, args=(conn, addr))
-        # process.start()
+        Thread = threading.Thread(target=authorization, args=(conn, addr))
+        Thread.start()
