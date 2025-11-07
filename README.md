@@ -1,6 +1,6 @@
 # Web Technology
 Web technology laboratory works for the 2nd semester of MAI.  
-Tutor - Titov Y. B.
+Tutor/Accepted by: Titov Yuri Pavlovich
 ### Description
 client.cpp - programm-client to connect servers and send a message
 
